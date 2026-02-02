@@ -1,0 +1,1031 @@
+{
+    "requirement": "The campus activity management system of NPU includes two subsystems, namely user management and activity management, which are used to maintain user information and activity information.\n\nThe user management subsystem maintains the information of students, teachers, and organizers. The information of the organizer, teachers, and students includes name, ID, phone number, and email. What’s more, the organizer belongs to the functional department or college under the jurisdiction of the university, and its name shall be the name of the functional department or college. Students also have information about student number, gender, grade, and department; Teachers should also maintain their job number and the name of the college to which they belong.\n\nThe activity management subsystem maintains the information of three types of activities (literary and artistic activities, lecture activities, and party day activities). All activities have the following attributes: ID, name, start time and end time, activity description, and site. Different types of activities have different attributes:\n- Literary and artistic activities: literary and artistic types\n- Lecture activities: speakers\n- Party Day Activities: Party Day Theme and Activity Classification\n\nFor the three types of activities, each activity has at least one organizer, and one organizer can hold multiple activities. Each activity has at least one responsible teacher, and one teacher can be responsible for multiple activities. Each activity can be signed up for by multiple teams, and each team can only participate in one activity.\n\nStudents can register to participate in activities in the form of a team. One student can join multiple teams, and a team can include one or more students (when there is only one student in a team, it is a single participant). A team includes three attributes: team ID, team name, and the college to which the team belongs. Each team can have multiple teachers or no teacher; Each teacher can guide multiple teams. The system provides the following functions:\n- View information of all users (students, teachers, sponsors)\n- View all activity information\n- Add, delete, modify, and check student/teacher/organizer information\n- Add, delete, modify, and check activity information\n- Screening activities based on time\n- Add a team to an activity ( registration), delete a team from an activity (cancel the registration)\n- Add a teacher to an activity and delete a teacher from an activity\n- Add an organizer to an activity and remove an organizer from an activity\n- Check whether a team has participated in multiple activities",
+    "solution_design": "@startuml\n\nclass NPUCampusActivityManagementSystem {\n    +displayUserManagement(): void\n    +displayActivityManagement(): void\n    +getUserManagement(): UserManagement\n    +getActivityManagement(): ActivityManagement\n}\nclass ActivityManagement {\n    +addActivity(activity: Activity): void\n    +deleteActivityById(id: String): void\n    +modifyActivityById(id: String): void\n    +getActivityById(id: String): Activity\n    +getActivityByTime(time: Time) : ArrayList<Activity>\n    +getActivitys(): ArrayList<Activity>\n    +checkActivityNumberOfTeam(id: String): int\n}\n\nclass UserManagement {\n    -students: List<Student>\n    -teachers: List<Teacher>\n    -organizers: List<Organizer>\n    +addStudent(student: Student): void\n    +deleteStudentById(id: String): void\n    +modifyStudentById(id: String): void\n    +getStudentById(id : String) : Student\n    +getStudents(): List<Student>\n    +addTeacher(teacher: Teacher): void\n    +deleteTeacherById(id: String): void\n    +modifyTeacherById(id: String): void\n    +getTeacherById(id: String): Teacher\n    +getTeachers(): List<Teacher>\n    +addOrganizer(organizer: Organizer): void\n    +deleteOrganizerById(id: String): void\n    +modifyOrganizerById(id: String): void\n    +getOrganizerById(id: String): Organizer\n    +getOrganizers(): List<Organizer>\n    +createTeam(teamId: String, teamName: String, department: String): void\n    +addStudentToTeam(studentId: String, teamId: String): void\n    +addTeacherToTeam(TeacherId: String, TeamId: String): void\n}\n\nclass Activity {\n    -id: String\n    -name: String\n    -startTime: Time\n    -endTime: Time\n    -detail : String\n    -place: String\n    +getId(): String\n    +getName(): String\n    +getStartTime(): Time\n    +getEndTime(): Time\n    +getDetail(): String\n    +getPlace(): String\n    +addTeamToActivity(team: Team): void\n    +deleteTeamFromActivity(id: String): void\n    +addTeacherToActivity(teacher: Teacher): void\n    +deleteTeacherFromActivity(id: String): void\n    +addOrganizerToActivity(organizer: Organizer): void\n    +deleteOrganizerFromActivity(id: String): void\n    +toString(): String\n    +equals(o: Object) : boolean\n}\n\nclass ArtisticActivity {\n    -type: String\n    +getType():String\n    +toString(): String\n}\n\nclass LectureActivity {\n    -keySpeaker: String\n    +getKeySpeaker(): String\n    +toString(): String\n}\n\nclass PartyActivity {\n    -theme: String\n    -classification: String\n    +getTheme() : String\n    +getClassification(): String\n    +toString(): String\n}\n\nclass Team {\n    -teamId: String\n    -teamName: String\n    -department: String\n    +getTeamId(): String\n    +getTeamName(): String\n    +getDepartment(): String\n    +getCreate(): Student\n    +toString(): String\n    +getStudents(): List<Student>\n    +getTeachers(): List<Teacher>\n    +addStudent(student: Student): void\n    +addTeacher(teacher: Teacher): void\n}\n\nclass Student extends User{\n    -studentNumber: String\n    -gender: boolean\n    -grade: String\n    -department: String\n    -teams: List<Team>\n    +getStudentNumber(): String\n    +getGender(): String\n    +getGrade(): String\n    +getDepartment(): String\n    +getTeamList(): List<team>\n    +toString(): String\n}\n\nclass Teacher extends User{\n    -teacherNumber: String\n    -department : String\n    +getTeacherNumber(): String\n    +getDepartment(): String\n    +setDepartment(department: String): void\n    +toString(): String\n}\n\nclass Organizer extends User{\n    -unit: String\n    +getUnit(): String\n    +toString(): String\n}\n\nclass User{\n    -id: String\n    -name: String\n    -phoneNumber: String\n    -email: String\n    +getId(): String\n    +getName(): String\n    +getPhoneNumber(): String\n    +getEmail(): String\n    +setPhoneNumber(phoneNumber: String): void\n    +setEmail(email: String):void\n    +setName(name: String): void\n    +toString(): String\n    +equals(o: Object) : boolean\n}\n\nActivityManagement \"1\" <-- \"1\" NPUCampusActivityManagementSystem : activityManagement \nActivityManagement  \"1\" --> \"0...*\" Activity : manages \nNPUCampusActivityManagementSystem \"1\" --> \"1\" UserManagement : userManagement\nUserManagement \"1..*\" --> \"0..*\" User : users\nActivity \"1\" --> \"0..*\" Team : teams\nActivity \"0...*\" --> \"1...*\" Teacher : teachers\nActivity \"0...*\" --> \"1...*\" Organizer : organizers\nActivity <|-- ArtisticActivity\nActivity <|-- LectureActivity\nActivity <|-- PartyActivity\nTeam \"0...*\" --> \"1...*\" Student : students\nTeam \"0...*\" --> \"0..*\" Teacher : teachers\n\n@enduml",
+    "classes_info": [
+        "NPUCampusActivityManagementSystem",
+        "ActivityManagement",
+        "UserManagement",
+        "Activity",
+        "ArtisticActivity",
+        "LectureActivity",
+        "PartyActivity",
+        "Team",
+        "Student",
+        "User",
+        "Teacher",
+        "Organizer"
+    ],
+    "attributes_info": {
+        "NPUCampusActivityManagementSystem": [],
+        "ActivityManagement": [],
+        "UserManagement": [
+            {
+                "name": "students",
+                "type": "List<Student>",
+                "access": "private"
+            },
+            {
+                "name": "teachers",
+                "type": "List<Teacher>",
+                "access": "private"
+            },
+            {
+                "name": "organizers",
+                "type": "List<Organizer>",
+                "access": "private"
+            }
+        ],
+        "Activity": [
+            {
+                "name": "id",
+                "type": "String",
+                "access": "private"
+            },
+            {
+                "name": "name",
+                "type": "String",
+                "access": "private"
+            },
+            {
+                "name": "startTime",
+                "type": "Time",
+                "access": "private"
+            },
+            {
+                "name": "endTime",
+                "type": "Time",
+                "access": "private"
+            },
+            {
+                "name": "detail",
+                "type": "String",
+                "access": "private"
+            },
+            {
+                "name": "place",
+                "type": "String",
+                "access": "private"
+            }
+        ],
+        "ArtisticActivity": [
+            {
+                "name": "type",
+                "type": "String",
+                "access": "private"
+            }
+        ],
+        "LectureActivity": [
+            {
+                "name": "keySpeaker",
+                "type": "String",
+                "access": "private"
+            }
+        ],
+        "PartyActivity": [
+            {
+                "name": "theme",
+                "type": "String",
+                "access": "private"
+            },
+            {
+                "name": "classification",
+                "type": "String",
+                "access": "private"
+            }
+        ],
+        "Team": [
+            {
+                "name": "teamId",
+                "type": "String",
+                "access": "private"
+            },
+            {
+                "name": "teamName",
+                "type": "String",
+                "access": "private"
+            },
+            {
+                "name": "department",
+                "type": "String",
+                "access": "private"
+            }
+        ],
+        "Student": [
+            {
+                "name": "studentNumber",
+                "type": "String",
+                "access": "private"
+            },
+            {
+                "name": "gender",
+                "type": "boolean",
+                "access": "private"
+            },
+            {
+                "name": "grade",
+                "type": "String",
+                "access": "private"
+            },
+            {
+                "name": "department",
+                "type": "String",
+                "access": "private"
+            },
+            {
+                "name": "teams",
+                "type": "List<Team>",
+                "access": "private"
+            }
+        ],
+        "User": [
+            {
+                "name": "id",
+                "type": "String",
+                "access": "private"
+            },
+            {
+                "name": "name",
+                "type": "String",
+                "access": "private"
+            },
+            {
+                "name": "phoneNumber",
+                "type": "String",
+                "access": "private"
+            },
+            {
+                "name": "email",
+                "type": "String",
+                "access": "private"
+            }
+        ],
+        "Teacher": [
+            {
+                "name": "teacherNumber",
+                "type": "String",
+                "access": "private"
+            },
+            {
+                "name": "department",
+                "type": "String",
+                "access": "private"
+            }
+        ],
+        "Organizer": [
+            {
+                "name": "unit",
+                "type": "String",
+                "access": "private"
+            }
+        ]
+    },
+    "methods_info": {
+        "NPUCampusActivityManagementSystem": [
+            {
+                "name": "displayUserManagement",
+                "parameters": [],
+                "returnType": "void",
+                "access": "public"
+            },
+            {
+                "name": "displayActivityManagement",
+                "parameters": [],
+                "returnType": "void",
+                "access": "public"
+            },
+            {
+                "name": "getUserManagement",
+                "parameters": [],
+                "returnType": "UserManagement",
+                "access": "public"
+            },
+            {
+                "name": "getActivityManagement",
+                "parameters": [],
+                "returnType": "ActivityManagement",
+                "access": "public"
+            }
+        ],
+        "ActivityManagement": [
+            {
+                "name": "addActivity",
+                "parameters": [
+                    {
+                        "name": "activity",
+                        "type": "Activity"
+                    }
+                ],
+                "returnType": "void",
+                "access": "public"
+            },
+            {
+                "name": "deleteActivityById",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "type": "String"
+                    }
+                ],
+                "returnType": "void",
+                "access": "public"
+            },
+            {
+                "name": "modifyActivityById",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "type": "String"
+                    }
+                ],
+                "returnType": "void",
+                "access": "public"
+            },
+            {
+                "name": "getActivityById",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "type": "String"
+                    }
+                ],
+                "returnType": "Activity",
+                "access": "public"
+            },
+            {
+                "name": "getActivityByTime",
+                "parameters": [
+                    {
+                        "name": "time",
+                        "type": "Time"
+                    }
+                ],
+                "returnType": "ArrayList<Activity>",
+                "access": "public"
+            },
+            {
+                "name": "getActivitys",
+                "parameters": [],
+                "returnType": "ArrayList<Activity>",
+                "access": "public"
+            },
+            {
+                "name": "checkActivityNumberOfTeam",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "type": "String"
+                    }
+                ],
+                "returnType": "int",
+                "access": "public"
+            }
+        ],
+        "UserManagement": [
+            {
+                "name": "addStudent",
+                "parameters": [
+                    {
+                        "name": "student",
+                        "type": "Student"
+                    }
+                ],
+                "returnType": "void",
+                "access": "public"
+            },
+            {
+                "name": "deleteStudentById",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "type": "String"
+                    }
+                ],
+                "returnType": "void",
+                "access": "public"
+            },
+            {
+                "name": "modifyStudentById",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "type": "String"
+                    }
+                ],
+                "returnType": "void",
+                "access": "public"
+            },
+            {
+                "name": "getStudentById",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "type": "String"
+                    }
+                ],
+                "returnType": "Student",
+                "access": "public"
+            },
+            {
+                "name": "getStudents",
+                "parameters": [],
+                "returnType": "List<Student>",
+                "access": "public"
+            },
+            {
+                "name": "addTeacher",
+                "parameters": [
+                    {
+                        "name": "teacher",
+                        "type": "Teacher"
+                    }
+                ],
+                "returnType": "void",
+                "access": "public"
+            },
+            {
+                "name": "deleteTeacherById",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "type": "String"
+                    }
+                ],
+                "returnType": "void",
+                "access": "public"
+            },
+            {
+                "name": "modifyTeacherById",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "type": "String"
+                    }
+                ],
+                "returnType": "void",
+                "access": "public"
+            },
+            {
+                "name": "getTeacherById",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "type": "String"
+                    }
+                ],
+                "returnType": "Teacher",
+                "access": "public"
+            },
+            {
+                "name": "getTeachers",
+                "parameters": [],
+                "returnType": "List<Teacher>",
+                "access": "public"
+            },
+            {
+                "name": "addOrganizer",
+                "parameters": [
+                    {
+                        "name": "organizer",
+                        "type": "Organizer"
+                    }
+                ],
+                "returnType": "void",
+                "access": "public"
+            },
+            {
+                "name": "deleteOrganizerById",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "type": "String"
+                    }
+                ],
+                "returnType": "void",
+                "access": "public"
+            },
+            {
+                "name": "modifyOrganizerById",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "type": "String"
+                    }
+                ],
+                "returnType": "void",
+                "access": "public"
+            },
+            {
+                "name": "getOrganizerById",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "type": "String"
+                    }
+                ],
+                "returnType": "Organizer",
+                "access": "public"
+            },
+            {
+                "name": "getOrganizers",
+                "parameters": [],
+                "returnType": "List<Organizer>",
+                "access": "public"
+            },
+            {
+                "name": "createTeam",
+                "parameters": [
+                    {
+                        "name": "teamId",
+                        "type": "String"
+                    },
+                    {
+                        "name": "teamName",
+                        "type": "String"
+                    },
+                    {
+                        "name": "department",
+                        "type": "String"
+                    }
+                ],
+                "returnType": "void",
+                "access": "public"
+            },
+            {
+                "name": "addStudentToTeam",
+                "parameters": [
+                    {
+                        "name": "studentId",
+                        "type": "String"
+                    },
+                    {
+                        "name": "teamId",
+                        "type": "String"
+                    }
+                ],
+                "returnType": "void",
+                "access": "public"
+            },
+            {
+                "name": "addTeacherToTeam",
+                "parameters": [
+                    {
+                        "name": "TeacherId",
+                        "type": "String"
+                    },
+                    {
+                        "name": "TeamId",
+                        "type": "String"
+                    }
+                ],
+                "returnType": "void",
+                "access": "public"
+            }
+        ],
+        "Activity": [
+            {
+                "name": "getId",
+                "parameters": [],
+                "returnType": "String",
+                "access": "public"
+            },
+            {
+                "name": "getName",
+                "parameters": [],
+                "returnType": "String",
+                "access": "public"
+            },
+            {
+                "name": "getStartTime",
+                "parameters": [],
+                "returnType": "Time",
+                "access": "public"
+            },
+            {
+                "name": "getEndTime",
+                "parameters": [],
+                "returnType": "Time",
+                "access": "public"
+            },
+            {
+                "name": "getDetail",
+                "parameters": [],
+                "returnType": "String",
+                "access": "public"
+            },
+            {
+                "name": "getPlace",
+                "parameters": [],
+                "returnType": "String",
+                "access": "public"
+            },
+            {
+                "name": "addTeamToActivity",
+                "parameters": [
+                    {
+                        "name": "team",
+                        "type": "Team"
+                    }
+                ],
+                "returnType": "void",
+                "access": "public"
+            },
+            {
+                "name": "deleteTeamFromActivity",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "type": "String"
+                    }
+                ],
+                "returnType": "void",
+                "access": "public"
+            },
+            {
+                "name": "addTeacherToActivity",
+                "parameters": [
+                    {
+                        "name": "teacher",
+                        "type": "Teacher"
+                    }
+                ],
+                "returnType": "void",
+                "access": "public"
+            },
+            {
+                "name": "deleteTeacherFromActivity",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "type": "String"
+                    }
+                ],
+                "returnType": "void",
+                "access": "public"
+            },
+            {
+                "name": "addOrganizerToActivity",
+                "parameters": [
+                    {
+                        "name": "organizer",
+                        "type": "Organizer"
+                    }
+                ],
+                "returnType": "void",
+                "access": "public"
+            },
+            {
+                "name": "deleteOrganizerFromActivity",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "type": "String"
+                    }
+                ],
+                "returnType": "void",
+                "access": "public"
+            },
+            {
+                "name": "toString",
+                "parameters": [],
+                "returnType": "String",
+                "access": "public"
+            },
+            {
+                "name": "equals",
+                "parameters": [
+                    {
+                        "name": "o",
+                        "type": "Object"
+                    }
+                ],
+                "returnType": "boolean",
+                "access": "public"
+            }
+        ],
+        "ArtisticActivity": [
+            {
+                "name": "getType",
+                "parameters": [],
+                "returnType": "String",
+                "access": "public"
+            },
+            {
+                "name": "toString",
+                "parameters": [],
+                "returnType": "String",
+                "access": "public"
+            }
+        ],
+        "LectureActivity": [
+            {
+                "name": "getKeySpeaker",
+                "parameters": [],
+                "returnType": "String",
+                "access": "public"
+            },
+            {
+                "name": "toString",
+                "parameters": [],
+                "returnType": "String",
+                "access": "public"
+            }
+        ],
+        "PartyActivity": [
+            {
+                "name": "getTheme",
+                "parameters": [],
+                "returnType": "String",
+                "access": "public"
+            },
+            {
+                "name": "getClassification",
+                "parameters": [],
+                "returnType": "String",
+                "access": "public"
+            },
+            {
+                "name": "toString",
+                "parameters": [],
+                "returnType": "String",
+                "access": "public"
+            }
+        ],
+        "Team": [
+            {
+                "name": "getTeamId",
+                "parameters": [],
+                "returnType": "String",
+                "access": "public"
+            },
+            {
+                "name": "getTeamName",
+                "parameters": [],
+                "returnType": "String",
+                "access": "public"
+            },
+            {
+                "name": "getDepartment",
+                "parameters": [],
+                "returnType": "String",
+                "access": "public"
+            },
+            {
+                "name": "getCreate",
+                "parameters": [],
+                "returnType": "Student",
+                "access": "public"
+            },
+            {
+                "name": "toString",
+                "parameters": [],
+                "returnType": "String",
+                "access": "public"
+            },
+            {
+                "name": "getStudents",
+                "parameters": [],
+                "returnType": "List<Student>",
+                "access": "public"
+            },
+            {
+                "name": "getTeachers",
+                "parameters": [],
+                "returnType": "List<Teacher>",
+                "access": "public"
+            },
+            {
+                "name": "addStudent",
+                "parameters": [
+                    {
+                        "name": "student",
+                        "type": "Student"
+                    }
+                ],
+                "returnType": "void",
+                "access": "public"
+            },
+            {
+                "name": "addTeacher",
+                "parameters": [
+                    {
+                        "name": "teacher",
+                        "type": "Teacher"
+                    }
+                ],
+                "returnType": "void",
+                "access": "public"
+            }
+        ],
+        "Student": [
+            {
+                "name": "getStudentNumber",
+                "parameters": [],
+                "returnType": "String",
+                "access": "public"
+            },
+            {
+                "name": "getGender",
+                "parameters": [],
+                "returnType": "String",
+                "access": "public"
+            },
+            {
+                "name": "getGrade",
+                "parameters": [],
+                "returnType": "String",
+                "access": "public"
+            },
+            {
+                "name": "getDepartment",
+                "parameters": [],
+                "returnType": "String",
+                "access": "public"
+            },
+            {
+                "name": "getTeamList",
+                "parameters": [],
+                "returnType": "List<team>",
+                "access": "public"
+            },
+            {
+                "name": "toString",
+                "parameters": [],
+                "returnType": "String",
+                "access": "public"
+            }
+        ],
+        "User": [
+            {
+                "name": "getId",
+                "parameters": [],
+                "returnType": "String",
+                "access": "public"
+            },
+            {
+                "name": "getName",
+                "parameters": [],
+                "returnType": "String",
+                "access": "public"
+            },
+            {
+                "name": "getPhoneNumber",
+                "parameters": [],
+                "returnType": "String",
+                "access": "public"
+            },
+            {
+                "name": "getEmail",
+                "parameters": [],
+                "returnType": "String",
+                "access": "public"
+            },
+            {
+                "name": "setPhoneNumber",
+                "parameters": [
+                    {
+                        "name": "phoneNumber",
+                        "type": "String"
+                    }
+                ],
+                "returnType": "void",
+                "access": "public"
+            },
+            {
+                "name": "setEmail",
+                "parameters": [
+                    {
+                        "name": "email",
+                        "type": "String"
+                    }
+                ],
+                "returnType": "void",
+                "access": "public"
+            },
+            {
+                "name": "setName",
+                "parameters": [
+                    {
+                        "name": "name",
+                        "type": "String"
+                    }
+                ],
+                "returnType": "void",
+                "access": "public"
+            },
+            {
+                "name": "toString",
+                "parameters": [],
+                "returnType": "String",
+                "access": "public"
+            },
+            {
+                "name": "equals",
+                "parameters": [
+                    {
+                        "name": "o",
+                        "type": "Object"
+                    }
+                ],
+                "returnType": "boolean",
+                "access": "public"
+            }
+        ],
+        "Teacher": [
+            {
+                "name": "getTeacherNumber",
+                "parameters": [],
+                "returnType": "String",
+                "access": "public"
+            },
+            {
+                "name": "getDepartment",
+                "parameters": [],
+                "returnType": "String",
+                "access": "public"
+            },
+            {
+                "name": "setDepartment",
+                "parameters": [
+                    {
+                        "name": "department",
+                        "type": "String"
+                    }
+                ],
+                "returnType": "void",
+                "access": "public"
+            },
+            {
+                "name": "toString",
+                "parameters": [],
+                "returnType": "String",
+                "access": "public"
+            }
+        ],
+        "Organizer": [
+            {
+                "name": "getUnit",
+                "parameters": [],
+                "returnType": "String",
+                "access": "public"
+            },
+            {
+                "name": "toString",
+                "parameters": [],
+                "returnType": "String",
+                "access": "public"
+            }
+        ]
+    },
+    "relationships_info": [
+        {
+            "from": "ActivityManagement",
+            "to": "NPUCampusActivityManagementSystem",
+            "r_type": "association",
+            "label": {
+                "from": "1",
+                "to": "1",
+                "action": "activityManagement"
+            }
+        },
+        {
+            "from": "ActivityManagement",
+            "to": "Activity",
+            "r_type": "association",
+            "label": {
+                "from": "1",
+                "to": "0...*",
+                "action": "manages"
+            }
+        },
+        {
+            "from": "NPUCampusActivityManagementSystem",
+            "to": "UserManagement",
+            "r_type": "association",
+            "label": {
+                "from": "1",
+                "to": "1",
+                "action": "userManagement"
+            }
+        },
+        {
+            "from": "UserManagement",
+            "to": "User",
+            "r_type": "association",
+            "label": {
+                "from": "1..*",
+                "to": "0..*",
+                "action": "users"
+            }
+        },
+        {
+            "from": "Activity",
+            "to": "Team",
+            "r_type": "association",
+            "label": {
+                "from": "1",
+                "to": "0..*",
+                "action": "teams"
+            }
+        },
+        {
+            "from": "Activity",
+            "to": "Teacher",
+            "r_type": "association",
+            "label": {
+                "from": "0...*",
+                "to": "1...*",
+                "action": "teachers"
+            }
+        },
+        {
+            "from": "Activity",
+            "to": "Organizer",
+            "r_type": "association",
+            "label": {
+                "from": "0...*",
+                "to": "1...*",
+                "action": "organizers"
+            }
+        },
+        {
+            "from": "Team",
+            "to": "Student",
+            "r_type": "association",
+            "label": {
+                "from": "0...*",
+                "to": "1...*",
+                "action": "students"
+            }
+        },
+        {
+            "from": "Team",
+            "to": "Teacher",
+            "r_type": "association",
+            "label": {
+                "from": "0...*",
+                "to": "0..*",
+                "action": "teachers"
+            }
+        },
+        {
+            "from": "User",
+            "to": "Student",
+            "r_type": "generalization",
+            "label": {
+                "from": "",
+                "to": "",
+                "action": ""
+            }
+        },
+        {
+            "from": "User",
+            "to": "Teacher",
+            "r_type": "generalization",
+            "label": {
+                "from": "",
+                "to": "",
+                "action": ""
+            }
+        },
+        {
+            "from": "User",
+            "to": "Organizer",
+            "r_type": "generalization",
+            "label": {
+                "from": "",
+                "to": "",
+                "action": ""
+            }
+        },
+        {
+            "from": "Activity",
+            "to": "ArtisticActivity",
+            "r_type": "generalization",
+            "label": {
+                "from": "",
+                "to": "",
+                "action": ""
+            }
+        },
+        {
+            "from": "Activity",
+            "to": "LectureActivity",
+            "r_type": "generalization",
+            "label": {
+                "from": "",
+                "to": "",
+                "action": ""
+            }
+        },
+        {
+            "from": "Activity",
+            "to": "PartyActivity",
+            "r_type": "generalization",
+            "label": {
+                "from": "",
+                "to": "",
+                "action": ""
+            }
+        }
+    ]
+}

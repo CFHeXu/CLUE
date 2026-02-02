@@ -1,0 +1,41 @@
+[project]
+name = "CLUE"
+version = "0.1.0"
+description = "CLUE is a novel metrics suite for automatically evaluating object-oriented designs (i.e., UML class diagram designs)."
+readme = {file = "README.md", content-type = "text/markdown"}
+requires-python = ">=3.10"
+license = {file = "LICENSE"}  # 确保 LICENSE 文件里写的是 GPL-3.0 完整文本
+authors = [
+    {name = "Bingxu Xiao", email = "bingxuxiao@mail.nwpu.edu.cn"},
+]
+keywords = ["clue", "oodeval", "evaluation", "metrics", "class diagram", "uml", "object-oriented", "software engineering", "ai evaluation"]
+
+dependencies = [
+    "numpy >=1.26",
+    "scikit-learn >=1.5",
+    "torch >=2.3",
+    "transformers >=4.40",
+]
+
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Intended Audience :: Developers",
+    "Intended Audience :: Science/Research",
+    "Topic :: Software Development :: Quality Assurance",
+    "Topic :: Scientific/Engineering :: Artificial Intelligence",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3 :: Only",
+    "License :: OSI Approved :: GNU General Public License v3 (GPLv3)",
+    "Operating System :: OS Independent",
+]
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.pytest.ini_options]
+pythonpath = ["src"]
+addopts = "--import-mode=importlib -ra --tb=short"

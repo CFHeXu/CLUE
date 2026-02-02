@@ -1,0 +1,502 @@
+{
+    "requirement": "The campus activity management system of NPU includes two subsystems, namely user management and activity management, which are used to maintain user information and activity information.\n\nThe user management subsystem maintains the information of students, teachers, and organizers. The information of the organizer, teachers, and students includes name, ID, phone number, and email. What’s more, the organizer belongs to the functional department or college under the jurisdiction of the university, and its name shall be the name of the functional department or college. Students also have information about student number, gender, grade, and department; Teachers should also maintain their job number and the name of the college to which they belong.\n\nThe activity management subsystem maintains the information of three types of activities (literary and artistic activities, lecture activities, and party day activities). All activities have the following attributes: ID, name, start time and end time, activity description, and site. Different types of activities have different attributes:\n- Literary and artistic activities: literary and artistic types\n- Lecture activities: speakers\n- Party Day Activities: Party Day Theme and Activity Classification\n\nFor the three types of activities, each activity has at least one organizer, and one organizer can hold multiple activities. Each activity has at least one responsible teacher, and one teacher can be responsible for multiple activities. Each activity can be signed up for by multiple teams, and each team can only participate in one activity.\n\nStudents can register to participate in activities in the form of a team. One student can join multiple teams, and a team can include one or more students (when there is only one student in a team, it is a single participant). A team includes three attributes: team ID, team name, and the college to which the team belongs. Each team can have multiple teachers or no teacher; Each teacher can guide multiple teams. The system provides the following functions:\n- View information of all users (students, teachers, sponsors)\n- View all activity information\n- Add, delete, modify, and check student/teacher/organizer information\n- Add, delete, modify, and check activity information\n- Screening activities based on time\n- Add a team to an activity ( registration), delete a team from an activity (cancel the registration)\n- Add a teacher to an activity and delete a teacher from an activity\n- Add an organizer to an activity and remove an organizer from an activity\n- Check whether a team has participated in multiple activities",
+    "solution_design": "@startuml\nclass CampusActivityManagementSystem {\n    +getinfoofuser(): User\n    +getfoofactivity(): Activity\n    +adduser(): void\n    +removeuser(): void\n    +addactivity(): void\n    +removeactivity(): void\n    +registration(): void\n    +canceltheregistration(): void\n    +getactivitybasedondatetime(): Activity\n    +adduserfromactivity(): void\n    +removeuserfromactivity(): void\n    +CheckWhetherTeamHasParticipatedInMultipleActivities(): void\n}\n\nclass User {\n    -phonenumber: String\n    -email: String\n    -name: String\n    -id: String\n    +getphonenumber(): String\n    +getemail(): String\n    +getid(): String\n    +getname(): String\n}\n\nclass student {\n    -studentnumber: String\n    -gender: String\n    -grade: String\n    -department: String\n    +getstudentnumber(): String\n    +getgender(): String\n    +getgrade(): String\n    +getdepartment(): String\n}\n\nclass teacher {\n    -jobnumber: String\n    -nameofcollege: String\n    +getjobnumber(): String\n    +getnameofcollege(): String\n}\n\nclass organizer {\n    -DepartmentName: String\n    +getDepartmentName(): String\n}\n\nclass Activity {\n    -ID: String\n    -name: String\n    -start time: String\n    -end time: String\n    -description: String\n    -location: String\n    +getID(): String\n    +getname(): String\n    +getstarttime(): String\n    +getendtime(): String\n    +getdescription(): String\n    +getlocation(): String\n}\n\nclass Team {\n    -id: String\n    -name: String\n    -college: String\n    +getID(): String\n    +getname(): String\n    +getcollege(): String\n    +adduser(): String\n    +removeuser(): String\n}\n\nclass Literaryandartistic {\n    -types: String\n    +gettypes(): String\n}\n\nclass Lecture {\n    -speakers: String\n    +getspeakers(): String\n}\n\nclass PartyDay {\n    +Theme: String\n    +Classification: String\n    +getTheme(): String\n    +getClassification(): String\n}\n\n' Relationships\nCampusActivityManagementSystem \"1\" --> \"0..*\" User\nCampusActivityManagementSystem \"1\" --> \"0..*\" Activity\n\norganizer \"1\" --> \"1..*\" Activity\nteacher \"1\" --> \"1..*\" Activity\nActivity \"1\" --> \"0..*\" Team\nTeam \"0..*\" -- \"1..*\" student\n\n\nUser <|-- student\nUser <|-- teacher\nUser <|-- organizer\nActivity <|-- Literaryandartistic\nActivity <|-- Lecture\nActivity <|-- PartyDay\n\n@enduml",
+    "classes_info": [
+        "CampusActivityManagementSystem",
+        "User",
+        "student",
+        "teacher",
+        "organizer",
+        "Activity",
+        "Team",
+        "Literaryandartistic",
+        "Lecture",
+        "PartyDay"
+    ],
+    "attributes_info": {
+        "CampusActivityManagementSystem": [],
+        "User": [
+            {
+                "name": "phonenumber",
+                "type": "String",
+                "access": "private"
+            },
+            {
+                "name": "email",
+                "type": "String",
+                "access": "private"
+            },
+            {
+                "name": "name",
+                "type": "String",
+                "access": "private"
+            },
+            {
+                "name": "id",
+                "type": "String",
+                "access": "private"
+            }
+        ],
+        "student": [
+            {
+                "name": "studentnumber",
+                "type": "String",
+                "access": "private"
+            },
+            {
+                "name": "gender",
+                "type": "String",
+                "access": "private"
+            },
+            {
+                "name": "grade",
+                "type": "String",
+                "access": "private"
+            },
+            {
+                "name": "department",
+                "type": "String",
+                "access": "private"
+            }
+        ],
+        "teacher": [
+            {
+                "name": "jobnumber",
+                "type": "String",
+                "access": "private"
+            },
+            {
+                "name": "nameofcollege",
+                "type": "String",
+                "access": "private"
+            }
+        ],
+        "organizer": [
+            {
+                "name": "DepartmentName",
+                "type": "String",
+                "access": "private"
+            }
+        ],
+        "Activity": [
+            {
+                "name": "ID",
+                "type": "String",
+                "access": "private"
+            },
+            {
+                "name": "name",
+                "type": "String",
+                "access": "private"
+            },
+            {
+                "name": "start time",
+                "type": "String",
+                "access": "private"
+            },
+            {
+                "name": "end time",
+                "type": "String",
+                "access": "private"
+            },
+            {
+                "name": "description",
+                "type": "String",
+                "access": "private"
+            },
+            {
+                "name": "location",
+                "type": "String",
+                "access": "private"
+            }
+        ],
+        "Team": [
+            {
+                "name": "id",
+                "type": "String",
+                "access": "private"
+            },
+            {
+                "name": "name",
+                "type": "String",
+                "access": "private"
+            },
+            {
+                "name": "college",
+                "type": "String",
+                "access": "private"
+            }
+        ],
+        "Literaryandartistic": [
+            {
+                "name": "types",
+                "type": "String",
+                "access": "private"
+            }
+        ],
+        "Lecture": [
+            {
+                "name": "speakers",
+                "type": "String",
+                "access": "private"
+            }
+        ],
+        "PartyDay": [
+            {
+                "name": "Theme",
+                "type": "String",
+                "access": "public"
+            },
+            {
+                "name": "Classification",
+                "type": "String",
+                "access": "public"
+            }
+        ]
+    },
+    "methods_info": {
+        "CampusActivityManagementSystem": [
+            {
+                "name": "getinfoofuser",
+                "parameters": [],
+                "returnType": "User",
+                "access": "public"
+            },
+            {
+                "name": "getfoofactivity",
+                "parameters": [],
+                "returnType": "Activity",
+                "access": "public"
+            },
+            {
+                "name": "adduser",
+                "parameters": [],
+                "returnType": "void",
+                "access": "public"
+            },
+            {
+                "name": "removeuser",
+                "parameters": [],
+                "returnType": "void",
+                "access": "public"
+            },
+            {
+                "name": "addactivity",
+                "parameters": [],
+                "returnType": "void",
+                "access": "public"
+            },
+            {
+                "name": "removeactivity",
+                "parameters": [],
+                "returnType": "void",
+                "access": "public"
+            },
+            {
+                "name": "registration",
+                "parameters": [],
+                "returnType": "void",
+                "access": "public"
+            },
+            {
+                "name": "canceltheregistration",
+                "parameters": [],
+                "returnType": "void",
+                "access": "public"
+            },
+            {
+                "name": "getactivitybasedondatetime",
+                "parameters": [],
+                "returnType": "Activity",
+                "access": "public"
+            },
+            {
+                "name": "adduserfromactivity",
+                "parameters": [],
+                "returnType": "void",
+                "access": "public"
+            },
+            {
+                "name": "removeuserfromactivity",
+                "parameters": [],
+                "returnType": "void",
+                "access": "public"
+            },
+            {
+                "name": "CheckWhetherTeamHasParticipatedInMultipleActivities",
+                "parameters": [],
+                "returnType": "void",
+                "access": "public"
+            }
+        ],
+        "User": [
+            {
+                "name": "getphonenumber",
+                "parameters": [],
+                "returnType": "String",
+                "access": "public"
+            },
+            {
+                "name": "getemail",
+                "parameters": [],
+                "returnType": "String",
+                "access": "public"
+            },
+            {
+                "name": "getid",
+                "parameters": [],
+                "returnType": "String",
+                "access": "public"
+            },
+            {
+                "name": "getname",
+                "parameters": [],
+                "returnType": "String",
+                "access": "public"
+            }
+        ],
+        "student": [
+            {
+                "name": "getstudentnumber",
+                "parameters": [],
+                "returnType": "String",
+                "access": "public"
+            },
+            {
+                "name": "getgender",
+                "parameters": [],
+                "returnType": "String",
+                "access": "public"
+            },
+            {
+                "name": "getgrade",
+                "parameters": [],
+                "returnType": "String",
+                "access": "public"
+            },
+            {
+                "name": "getdepartment",
+                "parameters": [],
+                "returnType": "String",
+                "access": "public"
+            }
+        ],
+        "teacher": [
+            {
+                "name": "getjobnumber",
+                "parameters": [],
+                "returnType": "String",
+                "access": "public"
+            },
+            {
+                "name": "getnameofcollege",
+                "parameters": [],
+                "returnType": "String",
+                "access": "public"
+            }
+        ],
+        "organizer": [
+            {
+                "name": "getDepartmentName",
+                "parameters": [],
+                "returnType": "String",
+                "access": "public"
+            }
+        ],
+        "Activity": [
+            {
+                "name": "getID",
+                "parameters": [],
+                "returnType": "String",
+                "access": "public"
+            },
+            {
+                "name": "getname",
+                "parameters": [],
+                "returnType": "String",
+                "access": "public"
+            },
+            {
+                "name": "getstarttime",
+                "parameters": [],
+                "returnType": "String",
+                "access": "public"
+            },
+            {
+                "name": "getendtime",
+                "parameters": [],
+                "returnType": "String",
+                "access": "public"
+            },
+            {
+                "name": "getdescription",
+                "parameters": [],
+                "returnType": "String",
+                "access": "public"
+            },
+            {
+                "name": "getlocation",
+                "parameters": [],
+                "returnType": "String",
+                "access": "public"
+            }
+        ],
+        "Team": [
+            {
+                "name": "getID",
+                "parameters": [],
+                "returnType": "String",
+                "access": "public"
+            },
+            {
+                "name": "getname",
+                "parameters": [],
+                "returnType": "String",
+                "access": "public"
+            },
+            {
+                "name": "getcollege",
+                "parameters": [],
+                "returnType": "String",
+                "access": "public"
+            },
+            {
+                "name": "adduser",
+                "parameters": [],
+                "returnType": "String",
+                "access": "public"
+            },
+            {
+                "name": "removeuser",
+                "parameters": [],
+                "returnType": "String",
+                "access": "public"
+            }
+        ],
+        "Literaryandartistic": [
+            {
+                "name": "gettypes",
+                "parameters": [],
+                "returnType": "String",
+                "access": "public"
+            }
+        ],
+        "Lecture": [
+            {
+                "name": "getspeakers",
+                "parameters": [],
+                "returnType": "String",
+                "access": "public"
+            }
+        ],
+        "PartyDay": [
+            {
+                "name": "getTheme",
+                "parameters": [],
+                "returnType": "String",
+                "access": "public"
+            },
+            {
+                "name": "getClassification",
+                "parameters": [],
+                "returnType": "String",
+                "access": "public"
+            }
+        ]
+    },
+    "relationships_info": [
+        {
+            "from": "CampusActivityManagementSystem",
+            "to": "User",
+            "r_type": "association",
+            "label": {
+                "from": "1",
+                "to": "0..*"
+            }
+        },
+        {
+            "from": "CampusActivityManagementSystem",
+            "to": "Activity",
+            "r_type": "association",
+            "label": {
+                "from": "1",
+                "to": "0..*"
+            }
+        },
+        {
+            "from": "organizer",
+            "to": "Activity",
+            "r_type": "association",
+            "label": {
+                "from": "1",
+                "to": "1..*"
+            }
+        },
+        {
+            "from": "teacher",
+            "to": "Activity",
+            "r_type": "association",
+            "label": {
+                "from": "1",
+                "to": "1..*"
+            }
+        },
+        {
+            "from": "Activity",
+            "to": "Team",
+            "r_type": "association",
+            "label": {
+                "from": "1",
+                "to": "0..*"
+            }
+        },
+        {
+            "from": "Team",
+            "to": "student",
+            "r_type": "association",
+            "label": {
+                "from": "0..*",
+                "to": "1..*"
+            }
+        },
+        {
+            "from": "student",
+            "to": "Team",
+            "r_type": "association",
+            "label": {
+                "from": "1..*",
+                "to": "0..*"
+            }
+        },
+        {
+            "from": "student",
+            "to": "User",
+            "r_type": "generalization"
+        },
+        {
+            "from": "teacher",
+            "to": "User",
+            "r_type": "generalization"
+        },
+        {
+            "from": "organizer",
+            "to": "User",
+            "r_type": "generalization"
+        },
+        {
+            "from": "Literaryandartistic",
+            "to": "Activity",
+            "r_type": "generalization"
+        },
+        {
+            "from": "Lecture",
+            "to": "Activity",
+            "r_type": "generalization"
+        },
+        {
+            "from": "PartyDay",
+            "to": "Activity",
+            "r_type": "generalization"
+        }
+    ]
+}
