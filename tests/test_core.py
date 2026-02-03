@@ -1,11 +1,13 @@
 # clue-codebert
-from CLUE.core import CLUE
-from CLUE.utils import EvaluationUtil
+from clue_oodeval.core import CLUE
+from clue_oodeval.utils import EvaluationUtil
+from pathlib import Path
+TESTS_DIR = Path(__file__).parent / "test_files"
 import json
 best_actual_weights = {'we': 0.809949398089146, 'wr': 0.190050601910854, 'wn': 0.7868036728153308, 'wa': 0.10425542769201852, 'wm': 0.10894089949265066, 'wat': 0.5942232195411594, 'wan': 0.4057767804588406, 'wmp': 0.11660127933232939, 'wmn': 0.7306275085450178, 'wmt': 0.15277121212265277, 'wpt': 0.050258460422135706, 'wpn': 0.9497415395778643, 'wrt': 0.1556958305042492, 'wrq': 0.22047580654418472, 'wrn': 0.6238283629515661}
-with open('./test_files/reference.json','r',encoding='utf-8') as f:
+with open(TESTS_DIR / "reference.json",'r',encoding='utf-8') as f:
     reference = json.load(f)
-with open('./test_files/candidate_human.json','r',encoding='utf-8') as f:
+with open(TESTS_DIR / "candidate_human.json",'r',encoding='utf-8') as f:
     candidate = json.load(f)
 print("calculate clue-codebert ...")
 clue_sim, clue_simce, clue_simca, clue_simcm, clue_simcr = 0, 0, 0, 0, 0

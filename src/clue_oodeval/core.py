@@ -1,4 +1,4 @@
-from CLUE.utils import EvaluationUtil
+from .utils import EvaluationUtil
 import re
 import threading
 from concurrent.futures import ThreadPoolExecutor
