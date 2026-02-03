@@ -6,8 +6,7 @@ import torch
 
 class EvaluationUtil:
 
-    MODEL_PATH = "/home/zhangmanqing/xbx/OODEval/hf_models/all-MiniLM-L6-v2"
-    MODEL_PATH_BASE = "/home/zhangmanqing/xbx/OODEval/hf_models/"
+    MODEL_PATH_BASE = "~/.cache/huggingface/hub"
     MODEL = None
 
     __TOKENIZER = None
@@ -55,38 +54,11 @@ class EvaluationUtil:
             # for i in range(m):
                 # print(f"M2 {i} -> M1 {best_state[i]}, similarity: {ES[best_state[i]][i]}")
         return Rflag, best_state, best_energy
-    
-    @staticmethod
-    def calc_similarity_ssc(word1, word2):
-        from nltk.corpus import wordnet as wn
-        synsets1 = wn.synsets(word1)
-        synsets2 = wn.synsets(word2)
-        max_similarity = 0.0
-        for synset1 in synsets1:
-            for synset2 in synsets2:
-                pl_similarity = synset1.path_similarity(synset2) if synset1.pos() == synset2.pos() else None
-                wup_similarity = synset1.wup_similarity(synset2) if synset1.pos() == synset2.pos() else None
-                if pl_similarity is not None and wup_similarity is not None:
-                    ssc = (pl_similarity + wup_similarity) / 2
-                    max_similarity = max(max_similarity, ssc)
-        return max_similarity
 
     @staticmethod
     def get_model(modelname):
-        # from sentence_transformers import SentenceTransformer
-        # # 加载专为语义相似度任务微调的模型
-        # # if EvaluationUtil.MODEL is None: 
-        # device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-        # EvaluationUtil.MODEL = SentenceTransformer(os.path.join(EvaluationUtil.MODEL_PATH_BASE,modelname)).to(device)
         return EvaluationUtil.MODEL
-    # @staticmethod
-    # def calc_similarity(text, text2, modelname):
-    #     model = EvaluationUtil.get_model(modelname)
-    #     # 获取文本嵌入
-    #     embeddings = model.encode([text, text2])
-    #     # 计算余弦相似度
-    #     similarity = cosine_similarity([embeddings[0]], [embeddings[1]])
-    #     return max(0.0,min(similarity[0][0], 1.0))
+  
     @staticmethod
     def set_base_model(modelname):
         if modelname in ['all-MiniLM-L6-v2','bge-large-en-v1.5']:
@@ -168,22 +140,4 @@ class EvaluationUtil:
                 return similarity.view(n, m).cpu().numpy()
             return calc_similarity_TransformersModel
         else: raise ValueError(f"{modelname} is not a correct name! Can't find in hf_models folder")
-    # @staticmethod
-    # def calc_similarity_by_codebert(text,text2,modelname):
-    #     tokenizer, model = EvaluationUtil.get_base_model(modelname)
-    #     reference_emb = EvaluationUtil.get_base_embedding(text,tokenizer,model)
-    #     candidate_emb = EvaluationUtil.get_base_embedding(text2,tokenizer,model)
-    #     similarity = torch.cosine_similarity(reference_emb, candidate_emb, dim=1)
-    #     return similarity
-    # @staticmethod
-    # def calc_similarity_by_bert(text,text2,modelname):
-    #     tokenizer, model = EvaluationUtil.get_base_model(modelname)
-    #     reference_emb = EvaluationUtil.get_base_embedding(text,tokenizer,model)
-    #     candidate_emb = EvaluationUtil.get_base_embedding(text2,tokenizer,model)
-    #     similarity = torch.cosine_similarity(reference_emb, candidate_emb, dim=1)
-    #     return similarity
         
-if __name__ == "__main__":
-    # 示例：计算 'car' 和 'automobile' 之间的综合语义相似度
-    similarity = EvaluationUtil.calc_similarity_ssc('car', 'automobile')
-    print(f"The SSC similarity between 'car' and 'automobile' is: {similarity}")

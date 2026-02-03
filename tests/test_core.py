@@ -11,7 +11,8 @@ with open(TESTS_DIR / "candidate_human.json",'r',encoding='utf-8') as f:
     candidate = json.load(f)
 print("calculate clue-codebert ...")
 clue_sim, clue_simce, clue_simca, clue_simcm, clue_simcr = 0, 0, 0, 0, 0
-EvaluationUtil.set_base_model("codebert-base")
+EvaluationUtil.MODEL_PATH_BASE = "xxxxx" # set your huggingface model cache path
+EvaluationUtil.set_base_model("codebert-base") # set model
 clue = CLUE(reference,candidate,EvaluationUtil.calc_similarity_batch("codebert-base"))
 clue.setCLUEParams(
     we = best_actual_weights['we'], wr = best_actual_weights['wr'], 
